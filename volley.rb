@@ -19,9 +19,9 @@ def compute_message(array)
 	messages = Array.new
 	array.each do |item|
 		if (item['actual_reservations']<item['max_reservations'])
-			messages.push("Guys ! We can now book for Volleyball on "+item['day']+" "+item['date']+ " at "+item['location']+" ("+item['actual_reservations'].to_s+"/"+item['max_reservations'].to_s+") :)")
+			messages.push("Guys ! It is "+Time.now.strftime("%H:%M")+" and we can now book for Volleyball on "+item['day']+" "+item['date']+ " at "+item['location']+" ("+item['actual_reservations'].to_s+"/"+item['max_reservations'].to_s+") :) This is an automatic message")
 		else
-			messages.push("Guys ! The Volleyball course on "+item['day']+" "+item['date']+ " at "+item['location']+" is already full :/")
+			messages.push("Guys ! It is "+Time.now.strftime("%H:%M")+" and the Volleyball course on "+item['day']+" "+item['date']+ " at "+item['location']+" is already full :/ This is an automatic message")
 		end
 	end
 	return messages
@@ -47,22 +47,19 @@ def send_sms(array_messages)
 # set up a client to talk to the Twilio REST API 
 @client = Twilio::REST::Client.new $account_sid, $auth_token 
  
-
-array_messages.each do |message| 
-	$array_phone_number.each do |phone_num|
-		@client.account.messages.create({
-			:from => $sender_phone_number, 
-			:to => phone_num, 
-			:body => message
-		})
-	end
-end 
+message = array_messages.join(' ')
+$array_phone_number.each do |phone_num|
+	@client.account.messages.create({
+		:from => $sender_phone_number, 
+		:to => phone_num, 
+		:body => message
+	})
+end
 
 end
 
 possibilities = Array.new
 preferences = read_preferences($preferences_file)
-#send_sms(["OK"])
 first_step = true
 
 while (true)
@@ -98,7 +95,22 @@ while (true)
 	new_possibilities = Array.new
 	temp_possibilities.each do |temp| # Check if a new course registration has opened since the last iteration
 		if (!possibilities.include? temp)
-			new_possibilities.push(temp)
+			is_same_course = false
+			actual_registration = 0
+			old_registration = 0
+			possibilities.each do |poss|
+				if(poss['day']==temp['day'] && poss['date']==temp['date'] && poss['hour']==temp['hour'] && poss['location']==temp['location'])
+					is_same_course = true
+					actual_registration = temp['reservations']
+					old_registration = poss['reservations']
+				end
+			end
+
+			if(is_same_course && old_registration==temp['max_reservations'] && actual_registration<old_registration) # Same course but it's not full anymore
+				new_possibilities.push(temp)
+			elsif(!is_same_course) # Another course
+				new_possibilities.push(temp)
+			end
 		end
 	end
 
@@ -114,7 +126,7 @@ while (true)
 		end
 		messages = compute_message(results)
 		puts messages
-		send_sms(messages)
+		#send_sms(messages)
 	else
 		puts "No new course"
 	end
