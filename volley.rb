@@ -49,7 +49,7 @@ def send_sms(array_messages)
  
 
 array_messages.each do |message| 
-	array_phone_number.each do |phone_num|
+	$array_phone_number.each do |phone_num|
 		@client.account.messages.create({
 			:from => $sender_phone_number, 
 			:to => phone_num, 
