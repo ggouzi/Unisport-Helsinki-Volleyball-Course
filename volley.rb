@@ -99,10 +99,10 @@ while (true)
 			actual_registration = 0
 			old_registration = 0
 			possibilities.each do |poss|
-				if(poss['day']==temp['day'] && poss['date']==temp['date'] && poss['hour']==temp['hour'] && poss['location']==temp['location'])
+				if(poss['day']==temp['day'] && poss['date']==temp['date'] && poss['hour']==temp['hour'] && poss['location']==temp['location']) # If it is the same course
 					is_same_course = true
-					actual_registration = temp['reservations']
-					old_registration = poss['reservations']
+					actual_registration = temp['actual_reservations']
+					old_registration = poss['actual_reservations']
 				end
 			end
 
