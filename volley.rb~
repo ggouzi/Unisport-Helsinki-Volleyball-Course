@@ -19,9 +19,9 @@ def compute_message(array)
 	messages = Array.new
 	array.each do |item|
 		if (item['actual_reservations']<item['max_reservations'])
-			messages.push("Guys ! It is "+Time.now.strftime("%H:%M")+" and we can now book for Volleyball on "+item['day']+" "+item['date']+ " at "+item['location']+" ("+item['actual_reservations'].to_s+"/"+item['max_reservations'].to_s+") :) This is an automatic message")
+			messages.push("Guys ! We can now book for Volleyball on "+item['day']+" "+item['date']+ " at "+item['location']+" ("+item['actual_reservations'].to_s+"/"+item['max_reservations'].to_s+") :) This is an automatic message")
 		else
-			messages.push("Guys ! It is "+Time.now.strftime("%H:%M")+" and the Volleyball course on "+item['day']+" "+item['date']+ " at "+item['location']+" is already full :/ This is an automatic message")
+			messages.push("Guys ! The Volleyball course on "+item['day']+" "+item['date']+ " at "+item['location']+" is already full :/ This is an automatic message")
 		end
 	end
 	return messages
