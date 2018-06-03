@@ -2,7 +2,7 @@
 require 'json'
 require 'date'
 require 'mail'
-require 'twilio-ruby' 
+require 'twilio-ruby'
 
 $preferences_file = "preferences.txt"
 # Replace with your personal data
